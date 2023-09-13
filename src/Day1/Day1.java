@@ -25,8 +25,8 @@ public class Day1 {
             System.out.println("1: " + count);
             count = 0;
             for (int i = 1; i + 2 < 2000; i++) {
-                int c1 = zahlen[i - 1] + zahlen[i] + zahlen[i+1];
-                int c2 = zahlen[i] + zahlen[i+1] + zahlen[i+2];
+                int c1 = zahlen[i - 1] + zahlen[i] + zahlen[i + 1];
+                int c2 = zahlen[i] + zahlen[i + 1] + zahlen[i + 2];
                 if (c1 < c2) count++;
             }
             System.out.println("2: " + count);
