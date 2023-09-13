@@ -1,0 +1,12 @@
+public static void main(String[] args) {
+    try (BufferedReader in = new BufferedReader(new FileReader("./Input/Day1"))) {
+        String line = in.readLine();
+        while (line != null) {
+
+
+            line = in.readLine();
+        }
+    } catch (IOException e) {
+        throw new RuntimeException(e);
+    }
+}
