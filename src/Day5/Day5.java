@@ -6,6 +6,8 @@ import java.io.IOException;
 import java.util.Scanner;
 
 public class Day5 {
+    static final boolean teil2 = true;
+
     public static void main(String[] args) {
         int[][] point = new int[1000][1000];
         try (BufferedReader in = new BufferedReader(new FileReader("./Input/Day5"))) {
@@ -39,7 +41,7 @@ public class Day5 {
                             point[x][yFrom]++;
                         }
                     }
-                } else {
+                } else if (teil2) {
                     int xPlus = +1;
                     if (xFrom > xTo) xPlus = -1;
                     int yPlus = +1;

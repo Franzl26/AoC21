@@ -9,8 +9,12 @@ import java.util.Scanner;
 
 public class Day6 {
     public static void main(String[] args) {
-//        bad();
+        long time = System.currentTimeMillis();
+        bad();
+        System.out.println("bad time: " + (System.currentTimeMillis() - time));
+        time = System.currentTimeMillis();
         better();
+        System.out.println("better time: " + (System.currentTimeMillis() - time));
     }
 
     public static void better() {
@@ -27,7 +31,6 @@ public class Day6 {
 
                 line = in.readLine();
             }
-            System.out.println(Arrays.toString(fish));
             for (int day = 0; day < 256; day++) {
                 long[] newFish = new long[9];
                 newFish[0] = fish[1];
@@ -62,7 +65,6 @@ public class Day6 {
 
                 line = in.readLine();
             }
-            System.out.println(Arrays.toString(fish));
             for (int day = 0; day < 80; day++) {
                 int anzNew = anz;
                 for (int f = 0; f < anz; f++) {
