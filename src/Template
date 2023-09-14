@@ -1,5 +1,7 @@
+private static final FILE = "./Input/Test";
+
 public static void main(String[] args) {
-    try (BufferedReader in = new BufferedReader(new FileReader("./Input/Day1"))) {
+    try (BufferedReader in = new BufferedReader(new FileReader(FILE))) {
         String line = in.readLine();
         while (line != null) {
 
