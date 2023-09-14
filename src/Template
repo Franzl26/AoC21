@@ -1,4 +1,4 @@
-private static final FILE = "./Input/Test";
+private static final String FILE = "./Input/Test";
 
 public static void main(String[] args) {
     try (BufferedReader in = new BufferedReader(new FileReader(FILE))) {
