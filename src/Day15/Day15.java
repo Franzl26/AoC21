@@ -5,6 +5,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.LinkedList;
 import java.util.PriorityQueue;
 
 public class Day15 {
@@ -29,9 +30,10 @@ public class Day15 {
             while (true) {
                 if (queue.isEmpty()) throw new RuntimeException();
                 Node n = queue.remove();
-                ArrayList<Node> list = expand(n, map, expanded);
+                ArrayList<Node> list = expand2(n, map, expanded);
                 if (list == null) {
                     System.out.println("teil 1: " + n.pathRisk);
+                    print(map, n);
                     break;
                 }
                 queue.addAll(list);
@@ -60,9 +62,10 @@ public class Day15 {
             while (true) {
                 if (queue.isEmpty()) throw new RuntimeException();
                 Node n = queue.remove();
-                ArrayList<Node> list = expand(n, map, expanded);
+                ArrayList<Node> list = expand2(n, map, expanded);
                 if (list == null) {
                     System.out.println("Teil2: " + n.pathRisk);
+                    print(map, n);
                     break;
                 }
                 queue.addAll(list);
@@ -70,6 +73,30 @@ public class Day15 {
 
         } catch (IOException e) {
             throw new RuntimeException(e);
+        }
+    }
+
+
+    public static void print(int[][] map, Node node) {
+        int til = map.length;
+        int[][] copy = new int[til][til];
+        for (int y = 0; y < til; y++) {
+            for (int x = 0; x < til; x++) {
+                copy[x][y] = map[x][y];
+            }
+        }
+
+        for (Integer[] i : node.path) {
+            copy[i[0]][i[1]] = -1;
+        }
+
+        for (int y = 0; y < til; y++) {
+            for (int x = 0; x < til; x++) {
+                if (copy[x][y] == -1) System.out.print("#");
+//                else System.out.print(copy[x][y]);
+                else System.out.print(".");
+            }
+            System.out.println();
         }
     }
 
@@ -93,17 +120,48 @@ public class Day15 {
         return list;
     }
 
+    public static ArrayList<Node> expand2(Node node, int[][] map, boolean[][] expanded) {
+        if (node.posX == map.length - 1 && node.posY == map.length - 1) return null;
+
+        expanded[node.posX][node.posY] = true;
+        ArrayList<Node> list = new ArrayList<>();
+        if (node.posX > 0 && !expanded[node.posX - 1][node.posY]) {
+            list.add(new Node(node.posX - 1, node.posY, node.pathRisk + map[node.posX - 1][node.posY], map.length, map.length, node.path));
+        }
+        if (node.posX < map.length - 1 && !expanded[node.posX + 1][node.posY]) {
+            list.add(new Node(node.posX + 1, node.posY, node.pathRisk + map[node.posX + 1][node.posY], map.length, map.length, node.path));
+        }
+        if (node.posY > 0 && !expanded[node.posX][node.posY - 1]) {
+            list.add(new Node(node.posX, node.posY - 1, node.pathRisk + map[node.posX][node.posY - 1], map.length, map.length, node.path));
+        }
+        if (node.posY < map.length - 1 && !expanded[node.posX][node.posY + 1]) {
+            list.add(new Node(node.posX, node.posY + 1, node.pathRisk + map[node.posX][node.posY + 1], map.length, map.length, node.path));
+        }
+        return list;
+    }
+
+
     public static class Node {
         int posX;
         int posY;
         int pathRisk;
         int minRisk;
+        LinkedList<Integer[]> path = new LinkedList<>();
 
         public Node(int posX, int posY, int pathRisk, int toX, int toY) {
             this.posX = posX;
             this.posY = posY;
             this.pathRisk = pathRisk;
             this.minRisk = pathRisk + Math.abs(posX - toX) + Math.abs(posY - toY);
+        }
+
+        public Node(int posX, int posY, int pathRisk, int toX, int toY, LinkedList<Integer[]> list) {
+            this.posX = posX;
+            this.posY = posY;
+            this.pathRisk = pathRisk;
+            this.minRisk = pathRisk + Math.abs(posX - toX) + Math.abs(posY - toY);
+            path.addAll(list);
+            path.add(new Integer[]{posX, posY});
         }
     }
 }
