@@ -1,13 +1,15 @@
 package Day18;
 
+import javax.swing.plaf.synth.SynthOptionPaneUI;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Objects;
 
 public class Day18 {
-    private static final String FILE = "./Input/Test";
+    private static final String FILE = "./Input/Day18";
 
     public static void main(String[] args) {
 //        Node n = parseLine("[[[[[4,3],4],4],[7,[[8,4],9]]],[1,1]]");
@@ -17,11 +19,13 @@ public class Day18 {
 //        Node n = parseLine("[[[[[4,3],4],4],[7,[[8,4],9]]],[1,1]");
 //        reduce(n).print();
 
-        Node n = parseLine("[[[[4,0],[5,4]],[[7,0],[15,5]]],[7,[[[3,7],[4,3]],[[6,3],[8,8]]]]]");
-        explode(n).print();
-        System.out.println("\n\n\n");
-        LinkedList<Node> lines = new LinkedList<>();
+//        Node n = parseLine("[[[[4,0],[5,4]],[[7,0],[15,5]]],[7,[[[3,7],[4,3]],[[6,3],[8,8]]]]]");
+//        n.print();
+//        deepCopy(n).print();
+//        explode(n).print();
+//        System.out.println("\n\n\n");
 
+        LinkedList<Node> lines = new LinkedList<>();
         try (BufferedReader in = new BufferedReader(new FileReader(FILE))) {
             String line = in.readLine();
             while (line != null) {
@@ -31,9 +35,23 @@ public class Day18 {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-
         Node sum = linesToSum(lines);
-        sum.print();
+//        sum.print();
+        System.out.println("part 1: " + magnitude(sum));
+
+
+        lines = new LinkedList<>();
+        try (BufferedReader in = new BufferedReader(new FileReader(FILE))) {
+            String line = in.readLine();
+            while (line != null) {
+                lines.add(parseLine(line));
+                line = in.readLine();
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        System.out.println("part 2: "+part2(lines));
+
     }
 
     public static Node findFirst5th(Node node, int level) {
@@ -168,13 +186,19 @@ public class Day18 {
         Node tmp = root;
         Node ret;
         do {
-            System.out.print("red: ");
-            tmp.print();
             ret = explode(tmp);
             if (ret == null) ret = split(tmp);
             if (ret != null) tmp = ret;
         } while (ret != null);
         return tmp;
+    }
+
+    public static long magnitude(Node node) {
+        if (node.value != null) return node.value;
+        long n = 0;
+        n += magnitude(node.left) * 3;
+        n += magnitude(node.right) * 2;
+        return n;
     }
 
     public static Node linesToSum(LinkedList<Node> lines) {
@@ -185,7 +209,6 @@ public class Day18 {
         root.print();
         root = reduce(root);
         for (int i = 2; i < arr.length; i++) {
-            System.out.print("sum: ");
             root.print();
             Node tmp = new Node(null);
             tmp.setLeft(root);
@@ -194,6 +217,31 @@ public class Day18 {
             root = reduce(root);
         }
         return root;
+    }
+
+    public static long part2(LinkedList<Node> lines) {
+        Node[] arr = lines.toArray(new Node[0]);
+        long max = 0;
+//        System.out.println(arr.length);
+        for (int i = 0; i < arr.length; i++) {
+//            System.out.println(i);
+            for (int j = i + 1; j < arr.length; j++) {
+//                System.out.println(j);
+                long l = magnitude(reduce(new Node(null).setLeft(deepCopy(arr[i])).setRight(deepCopy(arr[j])).print()).print());
+                long l2 = magnitude(reduce(new Node(null).setLeft(deepCopy(arr[j])).setRight(deepCopy(arr[i])).print()).print());
+                if (l > max) max = l;
+                if (l2 > max) max = l2;
+            }
+        }
+        return max;
+    }
+
+    public static Node deepCopy(Node old) {
+        if (old.value != null) return new Node(null, old.value);
+        Node n = new Node(null);
+        n.setLeft(deepCopy(old.left));
+        n.setRight(deepCopy(old.right));
+        return n;
     }
 
     public static Node parseLine(String line) {
@@ -245,19 +293,22 @@ public class Day18 {
             this.parent = parent;
         }
 
-        public void setLeft(Node node) {
+        public Node setLeft(Node node) {
             left = node;
             node.parent = this;
+            return this;
         }
 
-        public void setRight(Node node) {
+        public Node setRight(Node node) {
             right = node;
             node.parent = this;
+            return this;
         }
 
-        public void print() {
+        public Node print() {
             printRek();
             System.out.println();
+            return this;
         }
 
         private void printRek() {
